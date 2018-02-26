@@ -1,1 +1,49 @@
-<h1>{{ text }}</h1><!--<h1>{{ text }}</h1>-->
+<!--<h1>{{ text }}</h1>-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="ie=edge">-->
+    <meta http-equiv=Content-Type content="text/html">
+
+    <title>{%- block title -%}ТРИЦ{%- endblock -%}</title>
+
+
+</head>
+
+<body>
+    {% block css -%}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+    {%- endblock -%}
+
+    {%- block content -%}
+    <div id="content">
+    <table id="tb">
+        <tr>
+            <form name = "form1">
+                Текст сообщения:
+                <br> <textarea name = "message" rows = "10" cols = "20"></textarea></br>
+                <button id="but1">Отправить</button>
+            </form>
+        </tr>
+    </table>
+    </div>
+    {%- endblock -%}
+
+    {% block js -%}
+        <script type="text/javascript" src="//http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+        <script type="text/javascript" src="//http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    {%- endblock -%}
+    <!--{%- block footer -%}-->
+        <!--<footer id="footer" class="footer">-->
+            <!--<span id="clock">Дата и время</span>-->
+        <!--</footer>-->
+    <!--{%- endblock -%}-->
+</body>
+    {%- block tail -%}
+        <script src="{{ url_for('static', filename='js/form_button.js') }}"></script>
+        <!--<script src="{{ url_for('static', filename='js/react-dom.js') }}"></script>-->
+    {%- endblock -%}
+</html>

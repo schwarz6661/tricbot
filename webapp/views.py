@@ -7,7 +7,7 @@ def create_view(app):
 
 class FormView(MethodView):
     def get(self):
-        return render_template("form.html", text="Hey!")
+        return render_template("form.html", text='Hey')
 
 
     
