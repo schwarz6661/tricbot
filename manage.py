@@ -1,4 +1,5 @@
 from flask_script import Manager
+import os
 
 from webapp.assets import create_app
 
@@ -10,7 +11,7 @@ def runserver():
     """ Runserver with socketio support """
     return app.run(
         host='127.0.0.1',
-        port=7777,
+        port=os.environ.get('PORT', 7777),
         use_debugger=False,
         use_reloader=False
     )
