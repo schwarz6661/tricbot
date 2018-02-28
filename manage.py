@@ -9,10 +9,10 @@ manager = Manager(app)
 def runserver():
     """ Runserver with socketio support """
     return app.run(
-        host='127.0.0.1',
-        port=7777,
-        use_debugger=True,
-        use_reloader=True
+        host='0.0.0.0',
+        port=443,
+        use_debugger=False,
+        use_reloader=False
     )
 
 if __name__ == '__main__':
