@@ -24,7 +24,7 @@ class WebhookDialogflow(MethodView):
         return -1000000000
 
     def check_duty(self, data):
-        account = req.get("result", dict()).get("parameters", dict()).get("account")
+        account = data.get("result", dict()).get("parameters", dict()).get("account")
         speech = "Долг по счету {} равен {}".format(account, get_duty(account))
         
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
