@@ -49,7 +49,7 @@ class WebhookDialogflow(MethodView):
     def check_duty(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
         try:
-            speech = "Долг по счету {} равен {}".format(account, "\n".join(self.get_duty(account)))
+            speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
             speech = str(e)
 
