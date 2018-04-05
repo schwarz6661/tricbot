@@ -1,10 +1,17 @@
+import urllib
 from flask.views import MethodView
-from flask import render_template, request, jsonify, make_response
+from flask import render_template, request, jsonify, make_response, json
+
+
+class APIQueryError(Exception):
+    pass
+
 
 def create_view(app):
     app.add_url_rule("/form/", view_func=FormView.as_view("form"))
     app.add_url_rule("/dialogflow/", view_func=WebhookDialogflow.as_view("dialogflow"))
     return app
+
 
 class FormView(MethodView):
     def get(self):
@@ -17,14 +24,33 @@ class WebhookDialogflow(MethodView):
 
         if data.get("result").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
-        
+
         return make_response()
 
     def get_duty(self, account):
-        return 1000.05
+        try:
+            if account.isdigit():
+                with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
+                    debt = json.loads(response.read())
+
+                return (f"По вашему лицевому счету: {account}",
+                        f"Адрес: {debt['address']}",
+                        f"Ваша задолженность: {debt['amount']}")
+            else:
+                raise APIQueryError('Введите число!')
+        except urllib.request.HTTPError as err:
+            if err.code == 500:
+                raise APIQueryError("Сервер недоступен")
+            elif err.code == 404:
+                raise APIQueryError("Неправильный лицевой счет")
+            else:
+                raise APIQueryError("Что-то пошло не так")
 
     def check_duty(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
-        speech = "Долг по счету {} равен {}".format(account, self.get_duty(account))
+        try:
+            speech = "Долг по счету {} равен {}".format(account, "\n".join(self.get_duty(account)))
+        except APIQueryError as e:
+            speech = str(e)
 
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
