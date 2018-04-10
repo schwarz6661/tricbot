@@ -21,6 +21,7 @@ class FormView(MethodView):
 class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
+        print(data)
 
         if data.get("result").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
@@ -84,8 +85,7 @@ class WebhookDialogflow(MethodView):
 
     def check_readings(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
-        fio = data.get("result", dict().get("parameters", dict()).get("fio"))
-        print(account, fio, type(fio))
+        fio = data.get("result", dict().get("parameters", dict()).get("fio")
         try:
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
