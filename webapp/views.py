@@ -49,21 +49,19 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-    
+
 
     def get_readings(self, account, fio):
         try:
-            if account.isdigit():
-                with urllib.request.urlopen(
-                        f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={fio}') as response:
-                    debt = json.loads(response.read())
+            with urllib.request.urlopen(
+                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
+                debt = json.loads(response.read())
 
-                return (f"Адрес: {debt['address']}",
-                        f"Местоположение: {debt['place']}",
-                        f"Название: {debt['name']}",
-                        f"Модель: {debt['model']}")
-            else:
-                raise APIQueryError('Введите число!')
+            return (f"Адрес: {debt['address']}",
+                    f"Местоположение: {debt['place']}",
+                    f"Название: {debt['name']}",
+                    f"Модель: {debt['model']}")
+
         except urllib.request.HTTPError as err:
             if err.code == 500:
                 raise APIQueryError("Сервер недоступен")
@@ -84,7 +82,7 @@ class WebhookDialogflow(MethodView):
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
 
 
-    def check_readings(self,data):
+    def check_readings(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
         fio = data.get("result", dict().get("parameters", dict()).get("fio"))
         try:
