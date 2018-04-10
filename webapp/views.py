@@ -25,6 +25,9 @@ class WebhookDialogflow(MethodView):
         if data.get("result").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
 
+        if data.get("result").get("action") == "check.readings":
+            return make_response(jsonify(self.check_readings(data)))
+
         return make_response()
 
     def get_duty(self, account):
@@ -46,6 +49,31 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
+    
+
+    def get_readings(self, account, fio):
+        try:
+            if account.isdigit():
+                with urllib.request.urlopen(
+                        f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={fio}') as response:
+                    debt = json.loads(response.read())
+
+                return (f"Адрес: {debt['address']}",
+                        f"Местоположение: {debt['place']}",
+                        f"Название: {debt['name']}",
+                        f"Модель: {debt['model']}")
+            else:
+                raise APIQueryError('Введите число!')
+        except urllib.request.HTTPError as err:
+            if err.code == 500:
+                raise APIQueryError("Сервер недоступен")
+            elif err.code == 404:
+                raise APIQueryError("Неправильный лицевой счет")
+            else:
+                raise APIQueryError("Что-то пошло не так")
+
+
+
     def check_duty(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
         try:
@@ -53,4 +81,14 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
 
+        return {"speech": speech, "displayText": speech, "source": "tricbot"}
+
+
+    def check_readings(self,data):
+        account = data.get("result", dict()).get("parameters", dict()).get("account")
+        fio = data.get("result", dict().get("parameters", dict()).get("fio"))
+        try:
+            speech = "\n".join(self.get_readings(account, fio))
+        except APIQueryError as e:
+            speech = str(e)
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
