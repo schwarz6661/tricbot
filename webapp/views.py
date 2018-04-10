@@ -55,12 +55,9 @@ class WebhookDialogflow(MethodView):
         try:
             with urllib.request.urlopen(
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
-                debt = json.loads(response.read())
-
-            return (f"Адрес: {debt['address']}",
-                    f"Местоположение: {debt['place']}",
-                    f"Название: {debt['name']}",
-                    f"Модель: {debt['model']}")
+                counters = json.loads(response.read())
+            print(counters)
+            return (f"Адрес: {counters['address']}")
 
         except urllib.request.HTTPError as err:
             if err.code == 500:
@@ -85,7 +82,7 @@ class WebhookDialogflow(MethodView):
     def check_readings(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
         fio = data.get("result", dict()).get("parameters", dict()).get("fio")
-        print(account, fio, type(fio))
+
         try:
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
