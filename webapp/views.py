@@ -54,7 +54,7 @@ class WebhookDialogflow(MethodView):
     def get_readings(self, account, fio):
         try:
             with urllib.request.urlopen(
-                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(bytes(fio, 'utf-8'))}') as response:
+                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(bytes(fio, "utf-8"))}') as response:
                 debt = json.loads(response.read())
 
             return (f"Адрес: {debt['address']}",
