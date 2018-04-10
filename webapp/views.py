@@ -54,7 +54,7 @@ class WebhookDialogflow(MethodView):
     def get_readings(self, account, fio):
         try:
             with urllib.request.urlopen(
-                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(bytes(fio, "utf-8"))}') as response:
+                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={fio}') as response:
                 debt = json.loads(response.read())
 
             return (f"Адрес: {debt['address']}",
@@ -85,6 +85,7 @@ class WebhookDialogflow(MethodView):
     def check_readings(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
         fio = data.get("result", dict().get("parameters", dict()).get("fio"))
+        print(account, fio, type(fio))
         try:
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
