@@ -57,7 +57,7 @@ class WebhookDialogflow(MethodView):
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
                 counters = json.loads(response.read())
             counters_print = []
-            return (f"Адрес: {counters['address']}",) + tuple(counters_print)
+            return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
         except urllib.request.HTTPError as err:
             if err.code == 500:
