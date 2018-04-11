@@ -55,7 +55,7 @@ class WebhookDialogflow(MethodView):
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
                 counters = json.loads(response.read())
             counters_print = []
-            for i in counters['counters']:
+            for i in counters_print:
                 if i['place'] == None or i['model'] == None:
                     ('{place}'.format(place='Местоположение не указано ') + ': ' + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
                         model='Модель не указана') + ': ' + i['currReadings'])
