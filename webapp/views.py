@@ -49,14 +49,20 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-
-
     def get_readings(self, account, fio):
         try:
             with urllib.request.urlopen(
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
                 counters = json.loads(response.read())
             counters_print = []
+            for i in counters['counters']:
+                if i['place'] == None or i['model'] == None:
+                    counters_print = [('{place}'.format(place='Местоположение не указано ') + ': ' + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
+                        model='Модель не указана') + ': ' + i['currReadings'])]
+                else:
+                    counters_print = [('{place}'.format(place=i['place']) + ': '
+                                     + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
+                        model=i['model']) + ': ' + i['currReadings'])]
             return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
         except urllib.request.HTTPError as err:
