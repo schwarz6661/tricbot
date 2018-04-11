@@ -57,12 +57,12 @@ class WebhookDialogflow(MethodView):
             counters_print = []
             for i in counters['counters']:
                 if i['place'] == None or i['model'] == None:
-                    counters_print = [('{place}'.format(place='Местоположение не указано ') + ': ' + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
-                        model='Модель не указана') + ': ' + i['currReadings'])]
+                    ('{place}'.format(place='Местоположение не указано ') + ': ' + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
+                        model='Модель не указана') + ': ' + i['currReadings'])
                 else:
-                    counters_print = [('{place}'.format(place=i['place']) + ': '
+                    ('{place}'.format(place=i['place']) + ': '
                                      + '{name}'.format(name=i['name']) + '. ' + '{model}'.format(
-                        model=i['model']) + ': ' + i['currReadings'])]
+                        model=i['model']) + ': ' + i['currReadings'])
             return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
         except urllib.request.HTTPError as err:
