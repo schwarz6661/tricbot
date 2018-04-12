@@ -56,14 +56,13 @@ class WebhookDialogflow(MethodView):
                 counters = json.loads(response.read())
             counters_print = []
             shortcode = {
-                'Холодное водоснабжение': 'ХВ'
+                'Холодноеводоснабжение': 'ХВ'
             }
 
             for i in counters['counters']:
                 if i['place'] == None:
                     counters_print.append('{place}'.format(place='Место не указано ') + ': '
-                    + '{name}'.format(name=shortcode.get(i['name'], i['name'])) + '. ' + i['currReadings'])
-                    print(i['name'] == shortcode.keys()[0])
+                    + '{name}'.format(name=shortcode.get(i['name'].replace(' ', ''), i['name'])) + '. ' + i['currReadings'])
                 else:
                     counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name'])
                     + '. '  + i['currReadings'])
