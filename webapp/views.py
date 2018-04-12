@@ -55,16 +55,14 @@ class WebhookDialogflow(MethodView):
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
                 counters = json.loads(response.read())
             counters_print = []
-            servId = {10 : 'ХВ',
-                        8 : 'ГВ',
-                        383 : 'ЭЭ',
-                        384 : 'ЭЭ'}
-
+            shortcode = {
+                'Холодное водоснабжение': 'ХВ'
+            }
             for i in counters['counters']:
-                if i['place'] == None:
+                if i['place'] == None and i['serviceId']==10:
                     counters_print.append('{place}'.format(place='Место не указано ') + ': '
-                    + i['serviceId'].format(serviceId=s for s in servId)
-                    + '. ' + i['currReadings'])
+                    + '{name}'.format(name=shortcode.get(i['name'], i['name'])) + '. ' + i['currReadings'])
+                    
                 else:
                     counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name'])
                     + '. '  + i['currReadings'])
@@ -77,7 +75,6 @@ class WebhookDialogflow(MethodView):
                 raise APIQueryError("Неправильный лицевой счет")
             else:
                 raise APIQueryError("Что-то пошло не так")
-
 
 
     def check_duty(self, data):
