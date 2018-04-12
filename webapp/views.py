@@ -63,8 +63,8 @@ class WebhookDialogflow(MethodView):
             for i in counters['counters']:
                 if i['place'] == None:
                     counters_print.append('{place}'.format(place='Место не указано ') + ': '
-                    + '{serviceId}'.format(name=s for s in servId) + '. '
-                    + i['currReadings'])
+                    + i['serviceId'].format(serviceId=s for s in servId)
+                    + '. ' + i['currReadings'])
                 else:
                     counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name'])
                     + '. '  + i['currReadings'])
