@@ -55,12 +55,18 @@ class WebhookDialogflow(MethodView):
                     f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
                 counters = json.loads(response.read())
             counters_print = []
+            servId = {10 : 'ХВ',
+                        8 : 'ГВ',
+                        383 : 'ЭЭ',
+                        384 : 'ЭЭ'}
+
             for i in counters['counters']:
                 if i['place'] == None:
-                    counters_print.append('{place}'.format(place='Место не указано ') + ': ' + '{name}'.format(name=i['name']) + '. ' \
+                    counters_print.append('{place}'.format(place='Место не указано ') + ': '
+                    + '{serviceId}'.format(name=s for s in servId) + '. '
                     + i['currReadings'])
                 else:
-                    counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name']) \
+                    counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name'])
                     + '. '  + i['currReadings'])
             return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
