@@ -58,11 +58,12 @@ class WebhookDialogflow(MethodView):
             shortcode = {
                 'Холодное водоснабжение': 'ХВ'
             }
+
             for i in counters['counters']:
-                if i['place'] == None and i['serviceId']==10:
+                if i['place'] == None:
                     counters_print.append('{place}'.format(place='Место не указано ') + ': '
                     + '{name}'.format(name=shortcode.get(i['name'], i['name'])) + '. ' + i['currReadings'])
-                    
+                    print(type(i['name']))
                 else:
                     counters_print.append('{place}'.format(place=i['place']) + ': '+ '{name}'.format(name=i['name'])
                     + '. '  + i['currReadings'])
