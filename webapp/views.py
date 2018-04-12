@@ -63,13 +63,14 @@ class WebhookDialogflow(MethodView):
             }
 
             for i in counters['counters']:
-                if i['place'] == None:
+                if i['place'] == None or i['model']== None:
                     counters_print.append('{place}: {name}. {counter}'.format(name=shortcode.get(i['name'], i['name']),
                                                                               place='Место не указано ',
                                                                               counter=i['currReadings']))
                 else:
-                    counters_print.append('{place}: {name}. {counter}'.format(name=shortcode.get(i['name'], i['name']),
+                    counters_print.append('{place}: {model}. {name}. {counter}'.format(name=shortcode.get(i['name'], i['name']),
                                                                               place=i['place'],
+                                                                              model=i['model'],
                                                                               counter= i['currReadings']))
             return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
