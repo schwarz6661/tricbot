@@ -56,7 +56,10 @@ class WebhookDialogflow(MethodView):
                 counters = json.loads(response.read())
             counters_print = []
             shortcode = {
-                'Холодное водоснабжение': 'ХВ'
+                'Холодное водоснабжение': 'ХВ',
+                'Горячее водоснабжение': 'ГВ',
+                'Электроэнергия (день)': 'ЭЭ (день)',
+                'Электроэнергия (ночь)': 'ЭЭ (ночь)'
             }
 
             for i in counters['counters']:
