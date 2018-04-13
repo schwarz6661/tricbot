@@ -5,35 +5,36 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv=Content-Type content="text/html">
-    {% block css -%}
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}"> 
-    {%- endblock -%}
+    <!--{% block css -%}-->
+        <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">-->
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}"> -->
+    <!--{%- endblock -%}-->
 
-    {% block js -%}
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <script src="{{ url_for('static', filename='js/form.js') }}"></script>
-    {%- endblock -%}
+    <!--{% block js -%}-->
+        <!--<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>-->
+        <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
+        <!--<script src="{{ url_for('static', filename='js/form.js') }}"></script>-->
+    <!--{%- endblock -%}-->
 
     <title>{%- block title -%}ТРИЦ{%- endblock -%}</title>
 </head>
 
 <body>
     {%- block content -%}
-        <div class="col-sm-3 col-sm-offset-4 frame">
-            <ul></ul>
-            <div>
-                <div class="msj-rta macro">
-                    <div class="text text-r" style="background:whitesmoke !important">
-                        <input class="mytext" placeholder="Type a message" />
-                    </div>
-                </div>
-                <div style="padding:10px;">
-                    <span id="send" class="glyphicon glyphicon-share-alt"></span>
-                </div>
-            </div>
-        </div>
+    <iframe height="430" width="350" src="https://bot.dialogflow.com/0841b06c-4430-484c-a4b9-284815fd2dab"></iframe>
+        <!--<div class="col-sm-3 col-sm-offset-4 frame">-->
+            <!--<ul></ul>-->
+            <!--<div>-->
+                <!--<div class="msj-rta macro">-->
+                    <!--<div class="text text-r" style="background:whitesmoke !important">-->
+                        <!--<input class="mytext" placeholder="Type a message" />-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div style="padding:10px;">-->
+                    <!--<span id="send" class="glyphicon glyphicon-share-alt"></span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
     {%- endblock -%}
 </body>
 </html>

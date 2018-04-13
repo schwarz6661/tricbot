@@ -82,6 +82,8 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
+    # def place(self):
+    #
 
     def check_duty(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
