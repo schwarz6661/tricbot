@@ -28,6 +28,9 @@ class WebhookDialogflow(MethodView):
         if data.get("result").get("action") == "check.readings":
             return make_response(jsonify(self.check_readings(data)))
 
+        if data.get("result").get("action") == "payments":
+            return make_response(jsonify(self.payments(data)))
+
         return make_response()
 
     def get_duty(self, account):
@@ -82,8 +85,19 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-    # def place(self):
-    #
+    def get_payment(self, payment):
+        return (f"Окошко с оплатой {payment}")
+
+    def payments(self, data):
+        payment = data.get("result", dict()).get("parameters", dict()).get("payments")
+        try:
+            speech = "\n".join(self.get_payment(payment))
+        except APIQueryError as e:
+            speech = str(e)
+
+        return {"speech": speech, "displayText": speech, "source": "tricbot"}
+
+
 
     def check_duty(self, data):
         account = data.get("result", dict()).get("parameters", dict()).get("account")
