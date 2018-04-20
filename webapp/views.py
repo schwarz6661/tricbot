@@ -22,7 +22,7 @@ class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
 
-        if data.get("result").get("action") == "check.duty":
+        if data.get("queryResult").get("param") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
 
         if data.get("result").get("action") == "check.readings":
@@ -85,13 +85,11 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-    def get_payment(self, payment):
-        return (f"Окошко с оплатой {payment}")
 
     def payments(self, data):
         payment = data.get("result", dict()).get("parameters", dict()).get("payments")
         try:
-            speech = "\n".join(self.get_payment(payment))
+            speech = "" + payment
         except APIQueryError as e:
             speech = str(e)
 
