@@ -98,7 +98,7 @@ class WebhookDialogflow(MethodView):
 
 
     def check_duty(self, data):
-        account = data.get("result", dict()).get("parameters", dict()).get("account")
+        account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
         try:
             speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
