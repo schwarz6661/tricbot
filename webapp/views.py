@@ -22,7 +22,7 @@ class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
 
-        if data.get("queryResult").get("param") == "check.duty":
+        if data.get("queryResult").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
 
         if data.get("result").get("action") == "check.readings":
