@@ -35,15 +35,12 @@ class WebhookDialogflow(MethodView):
 
     def get_duty(self, account):
         try:
-            if account.isdigit():
-                with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
-                    debt = json.loads(response.read())
+            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
+                debt = json.loads(response.read())
 
-                return (f"По вашему лицевому счету: {account}",
-                        f"Адрес: {debt['address']}",
-                        f"Ваша задолженность: {debt['amount']}")
-            else:
-                raise APIQueryError('Введите число!')
+            return (f"По вашему лицевому счету: {account}",
+                    f"Адрес: {debt['address']}",
+                    f"Ваша задолженность: {debt['amount']}")
         except urllib.request.HTTPError as err:
             if err.code == 500:
                 raise APIQueryError("Сервер недоступен")
