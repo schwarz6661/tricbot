@@ -25,10 +25,10 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
 
-        if data.get("result").get("action") == "check.readings":
+        if data.get("queryResult").get("action") == "check.readings":
             return make_response(jsonify(self.check_readings(data)))
 
-        if data.get("result").get("action") == "payments":
+        if data.get("queryResult").get("action") == "payments":
             return make_response(jsonify(self.payments(data)))
 
         return make_response()
@@ -86,7 +86,7 @@ class WebhookDialogflow(MethodView):
 
 
     def payments(self, data):
-        payment = data.get("result", dict()).get("parameters", dict()).get("payments")
+        payment = data.get("queryResult", dict()).get("parameters", dict()).get("payments")
         try:
             speech = "" + payment
         except APIQueryError as e:
@@ -107,8 +107,8 @@ class WebhookDialogflow(MethodView):
 
 
     def check_readings(self, data):
-        account = data.get("result", dict()).get("parameters", dict()).get("account")
-        fio = data.get("result", dict()).get("parameters", dict()).get("fio")
+        account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
+        fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
         try:
             speech = "\n".join(self.get_readings(account, fio))
