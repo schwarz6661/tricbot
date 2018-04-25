@@ -21,7 +21,6 @@ class FormView(MethodView):
 class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
-        print(data)
 
         if data.get("queryResult").get("action") == "check.duty":
             return make_response(jsonify(self.check_duty(data)))
