@@ -36,7 +36,7 @@ class WebhookDialogflow(MethodView):
 
     def get_duty(self, account):
         try:
-            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{int(account)}/debt') as response:
+            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
                 debt = json.loads(response.read())
 
             return (f"По вашему лицевому счету: {account}",
@@ -95,20 +95,20 @@ class WebhookDialogflow(MethodView):
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
 
     def check_duty(self, data):
-        account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
+        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         try:
             speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
             speech = str(e)
         print(speech)
-        return {"speech": speech, "displayText": speech, "source": "tricbot"}
+        return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
 
     def check_readings(self, data):
-        account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
+        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
         try:
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        return {"speech": speech, "displayText": speech, "source": "tricbot"}
+        return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
