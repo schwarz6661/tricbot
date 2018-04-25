@@ -30,13 +30,13 @@ class WebhookDialogflow(MethodView):
             return make_response(jsonify(self.check_readings(data)))
 
         if data.get("queryResult").get("action") == "payments":
-            return make_response(jsonify(self.payments(data)))
+            return make_response()
 
         return make_response()
 
     def get_duty(self, account):
         try:
-            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
+            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{urllib.parse.quote(account)}/debt') as response:
                 debt = json.loads(response.read())
 
             return (f"По вашему лицевому счету: {account}",
