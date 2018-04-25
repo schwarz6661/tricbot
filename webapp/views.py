@@ -36,7 +36,7 @@ class WebhookDialogflow(MethodView):
 
     def get_duty(self, account):
         try:
-            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{urllib.parse.quote(account)}/debt') as response:
+            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{int(account)}/debt') as response:
                 debt = json.loads(response.read())
 
             return (f"По вашему лицевому счету: {account}",
