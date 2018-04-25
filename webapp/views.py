@@ -66,15 +66,15 @@ class WebhookDialogflow(MethodView):
             }
 
             for i in counters['counters']:
-                if i['place'] == None or i['model']== None:
+                if i['place'] is None or i['model'] is None:
                     counters_print.append('{place}: {name}. {counter}'.format(name=shortcode.get(i['name'], i['name']),
                                                                               place='Место не указано ',
                                                                               counter=i['currReadings']))
                 else:
                     counters_print.append('{place}: {model}. {name}. {counter}'.format(name=shortcode.get(i['name'], i['name']),
-                                                                              place=i['place'],
-                                                                              model=i['model'],
-                                                                              counter= i['currReadings']))
+                                                                                       place=i['place'],
+                                                                                       model=i['model'],
+                                                                                       counter=i['currReadings']))
             return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
         except urllib.request.HTTPError as err:
@@ -85,7 +85,6 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-
     def payments(self, data):
         payment = data.get("queryResult", dict()).get("parameters", dict()).get("payments")
         try:
@@ -95,17 +94,14 @@ class WebhookDialogflow(MethodView):
 
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
 
-
-
     def check_duty(self, data):
         account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
         try:
-            speech = "\n".join(self.get_duty(int(account)))
+            speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
             speech = str(e)
-
+        print(speech)
         return {"speech": speech, "displayText": speech, "source": "tricbot"}
-
 
     def check_readings(self, data):
         account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
