@@ -36,10 +36,9 @@ class WebhookDialogflow(MethodView):
 
     def get_duty(self, account):
         try:
-            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt') as response:
+            with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=5) as response:
                 debt = json.loads(response.read())
-            print(debt)
-            
+
             return (f"По вашему лицевому счету: {account}",
                     f"Адрес: {debt['address']}",
                     f"Ваша задолженность: {debt['amount']}")
@@ -97,12 +96,12 @@ class WebhookDialogflow(MethodView):
 
     def check_duty(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
-        print(account)
+
         try:
             speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
             speech = str(e)
-        print(speech)
+
         return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
 
     def check_readings(self, data):
