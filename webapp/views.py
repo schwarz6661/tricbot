@@ -37,7 +37,7 @@ class WebhookDialogflow(MethodView):
         try:
             with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=0.0001) as response:
                 debt = json.loads(response.read())
-
+            print(debt)
             return (f"По вашему лицевому счету: {account}",
                     f"Адрес: {debt['address']}",
                     f"Ваша задолженность: {debt['amount']}")
