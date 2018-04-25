@@ -44,6 +44,8 @@ class WebhookDialogflow(MethodView):
         except urllib.request.HTTPError as err:
             if err.code == 500:
                 raise APIQueryError("Сервер недоступен")
+            elif err.code == 503:
+                raise APIQueryError("Сервер недоступен")
             elif err.code == 404:
                 raise APIQueryError("Неправильный лицевой счет")
             elif err.code == 408:
