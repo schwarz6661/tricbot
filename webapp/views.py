@@ -28,8 +28,8 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "check.readings":
             return make_response(jsonify(self.check_readings(data)))
 
-        if data.get("queryResult").get("action") == "payments":
-            return make_response()
+        if data.get("queryResult").get("action") == "verification":
+            return make_response(jsonify(self.verification(data)))
 
         return make_response()
 
@@ -52,6 +52,7 @@ class WebhookDialogflow(MethodView):
                 raise APIQueryError("Нет ответа от сервера")
             else:
                 raise APIQueryError("Что-то пошло не так")
+
 
     def get_readings(self, account, fio):
         try:
@@ -86,10 +87,44 @@ class WebhookDialogflow(MethodView):
             else:
                 raise APIQueryError("Что-то пошло не так")
 
-    def payments(self, data):
-        payment = data.get("queryResult", dict()).get("parameters", dict()).get("payments")
+
+    def get_verify(self, account, fio):
         try:
-            speech = "" + payment
+            with urllib.request.urlopen(
+                    f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
+                counters = json.loads(response.read())
+                counters_print = []
+                shortcode = {
+                    'Холодное водоснабжение': 'ХВ',
+                    'Горячее водоснабжение': 'ГВ',
+                    'Электроэнергия (день)': 'ЭЭ (день)',
+                    'Электроэнергия (ночь)': 'ЭЭ (ночь)'
+                }
+
+            for i in counters['counters']:
+                if i['place'] is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
+                    counters_print.append('{place}: {name}. {nextVerificationMessage}'.format(nextVerificationMessage=i['nextVerificationMessage'],
+                                                                                                name=shortcode.get(i['name']),
+                                                                                                place='Место не указано '))
+                else:
+                    counters_print.append('{place}: {model}. {nextVerificationMessage}'.format(place=i['place'],
+                                                                                                model=i['model'],
+                                                                                                nextVerificationMessage=i['nextVerificationMessage']))
+            return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
+
+        except urllib.request.HTTPError as err:
+            if err.code == 500:
+                raise APIQueryError("Сервер недоступен")
+            elif err.code == 404:
+                raise APIQueryError("Неправильный лицевой счет")
+            else:
+                raise APIQueryError("Что-то пошло не так")
+
+    def verification(self, data):
+        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
+        fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
+        try:
+            speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
             speech = str(e)
 
