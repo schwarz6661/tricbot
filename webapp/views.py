@@ -100,17 +100,17 @@ class WebhookDialogflow(MethodView):
                     'Электроэнергия (день)': 'ЭЭ (день)',
                     'Электроэнергия (ночь)': 'ЭЭ (ночь)'
                 }
-
             for i in counters['counters']:
                 if i['place'] is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
                     counters_print.append('{place}: {name}. {nextVerificationMessage}'.format(nextVerificationMessage=i['nextVerificationMessage'],
                                                                                                 name=shortcode.get(i['name']),
-                                                                                                place='Место не указано '))
+                                                                                                place=''))
                 else:
-                    counters_print.append('{place}: {model}. {nextVerificationMessage}'.format(place=i['place'],
+                    counters_print.append('{place}: {model}. {name}. До следующей поверки {nextVerificationRemaining} дн.'.format(place=i['place'],
                                                                                                 model=i['model'],
-                                                                                                nextVerificationMessage=i['nextVerificationMessage']))
-            return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
+                                                                                                name=i['name'],
+                                                                                                nextVerificationRemaining=i['nextVerificationRemaining']))
+            return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
 
         except urllib.request.HTTPError as err:
             if err.code == 500:
