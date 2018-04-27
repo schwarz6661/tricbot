@@ -108,7 +108,7 @@ class WebhookDialogflow(MethodView):
                 else:
                     counters_print.append('{place}: {model}. {name}. До следующей поверки {nextVerificationRemaining} дн.'.format(place=i['place'],
                                                                                                 model=i['model'],
-                                                                                                name=i['name'],
+                                                                                                name=shortcode.get(i['name']),
                                                                                                 nextVerificationRemaining=i['nextVerificationRemaining']))
             return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
 
