@@ -102,11 +102,10 @@ class WebhookDialogflow(MethodView):
                 }
             for i in counters['counters']:
                 if i['place'] is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
-                    counters_print.append('{place}: {name}. {nextVerificationMessage}'.format(nextVerificationMessage=i['nextVerificationMessage'],
-                                                                                                name=shortcode.get(i['name']),
-                                                                                                place=''))
+                    counters_print.append('Комм. услуга {name}. {nextVerificationMessage}!'.format(nextVerificationMessage=i['nextVerificationMessage'],
+                                                                                                name=shortcode.get(i['name'])))
                 else:
-                    counters_print.append('{place}: {model}. {name}. До следующей поверки {nextVerificationRemaining} дн.'.format(place=i['place'],
+                    counters_print.append('Счетчик модели {model} комм. услуги {name}. ({place}) До следующей поверки {nextVerificationRemaining} дн.'.format(place=i['place'],
                                                                                                 model=i['model'],
                                                                                                 name=shortcode.get(i['name']),
                                                                                                 nextVerificationRemaining=i['nextVerificationRemaining']))
