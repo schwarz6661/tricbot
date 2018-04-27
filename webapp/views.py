@@ -128,7 +128,7 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
 
-            return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
+        return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
 
     def check_duty(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
