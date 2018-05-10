@@ -28,7 +28,7 @@ class FormView(MethodView):
 def api_query(fn):
     def query(*args, **kwargs):
         try:
-            fn(*args, **kwargs)
+            return fn(*args, **kwargs)
         except urllib.request.HTTPError as err:
             if err.code in (500, 503):
                 raise APIQueryError("Сервер недоступен")
