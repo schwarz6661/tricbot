@@ -28,6 +28,7 @@ class FormView(MethodView):
 def api_query(fn):
     def query(*args, **kwargs):
         try:
+            print(fn, args, kwargs)
             return fn(*args, **kwargs)
         except urllib.request.HTTPError as err:
             if err.code in (500, 503):
@@ -107,7 +108,7 @@ class WebhookDialogflow(MethodView):
                 counters_print.append(f"Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-        return list((f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print))
+        return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
     @api_query
     def get_verify(self, account, fio):
