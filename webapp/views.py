@@ -104,14 +104,9 @@ class WebhookDialogflow(MethodView):
 
         for i in counters['counters']:
             if i['place'] is None or i['model'] is None:
-                counters_print.append('{place}: {name}. {counter}'.format(name=SHORTCODE.get(i['name'], i['name']),
-                                                                          place='Место не указано ',
-                                                                          counter=i['currReadings']))
+                counters_print.append(f"Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
-                counters_print.append('{place}: {model}. {name}. {counter}'.format(name=SHORTCODE.get(i['name'], i['name']),
-                                                                                   place=i['place'],
-                                                                                   model=i['model'],
-                                                                                   counter=i['currReadings']))
+                counters_print.append(f"{i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
         return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
 
     @api_query
@@ -119,7 +114,7 @@ class WebhookDialogflow(MethodView):
         with urllib.request.urlopen(
                 f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
             counters = json.loads(response.read())
-            counters_print = []
+        counters_print = []
 
         for i in counters['counters']:
             if i.get('place') is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
