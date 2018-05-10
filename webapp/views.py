@@ -107,7 +107,7 @@ class WebhookDialogflow(MethodView):
                 counters_print.append(f"Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-        return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
+        return list((f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print))
 
     @api_query
     def get_verify(self, account, fio):
