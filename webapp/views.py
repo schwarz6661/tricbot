@@ -90,7 +90,6 @@ class WebhookDialogflow(MethodView):
     def get_duty(self, account):
         with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=1) as response:
             debt = json.loads(response.read())
-
         return (f"По вашему лицевому счету: {account}",
                 f"Адрес: {debt['address']}",
                 f"Ваша задолженность: {debt['amount']}")
@@ -104,7 +103,7 @@ class WebhookDialogflow(MethodView):
 
         for i in counters['counters']:
             if i['place'] is None or i['model'] is None:
-                counters_print.append(f"Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+                counters_print.append(f" Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
         return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
@@ -115,11 +114,12 @@ class WebhookDialogflow(MethodView):
                 f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
             counters = json.loads(response.read())
         counters_print = []
-
+        k=0
         for i in counters['counters']:
+            k=k+1
             if i.get('place') is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
-                counters_print.append(f"Комм. услуга {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
+                counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
             else:
-                counters_print.append(f"Счетчик модели {i['model']} комм. услуги {SHORTCODE.get(i['name'])}. "
-                                      f"({i['place']}) До следующей поверки {i['nextVerificationRemaining']} дн.")
+                counters_print.append(f"{k}. {i['model']} комм. услуги {SHORTCODE.get(i['name'])}"
+                                      f"({i['place']}). До следующей поверки {i['nextVerificationRemaining']} дн.")
         return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
