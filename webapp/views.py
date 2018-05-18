@@ -54,7 +54,7 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
 
-        return make_response()
+        return make_response(jsonify(self.default()))
 
     def verification(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
@@ -64,6 +64,10 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
 
+        return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
+    
+    def default(self):
+        speech = "Что-то пошло не так"
         return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
 
     def check_duty(self, data):
