@@ -121,9 +121,9 @@ class WebhookDialogflow(MethodView):
             counters = json.loads(response.read())
         counters_print = []
         k=0
-        for i in counters['counters'] is None:
+        for i in counters['counters']:
             k=k+1
-            if i['counters']==' ':
+            if i['counters'] is None:
                 counters_print.append(f"Счетчики отсутствуют!")
             if  i['nextVerificationRemaining'] < 0 or i.get('place') is None:
                 counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
