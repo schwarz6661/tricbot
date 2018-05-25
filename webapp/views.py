@@ -121,7 +121,7 @@ class WebhookDialogflow(MethodView):
             counters = json.loads(response.read())
         counters_print = []
         k=0
-        for i in counters['counters']:
+        for i in counters['counters'] is None:
             k=k+1
             if i['counters']==' ':
                 counters_print.append(f"Счетчики отсутствуют!")
