@@ -106,7 +106,7 @@ class WebhookDialogflow(MethodView):
         counters_print = []
         k=0
         for i in counters['counters']:
-            if i['counters']==' ':
+            if i['counters'] is None:
                 counters_print.append(f"Счетчики отсутствуют!")
             if i['place'] is None or i['model'] is None:
                 counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
