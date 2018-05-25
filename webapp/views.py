@@ -104,13 +104,15 @@ class WebhookDialogflow(MethodView):
                 f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
             counters = json.loads(response.read())
         counters_print = []
-
+        k=0
         for i in counters['counters']:
+            if i['counters']==' ':
+                counters_print.append(f"Счетчики отсутствуют!")
             if i['place'] is None or i['model'] is None:
-                counters_print.append(f" Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+                counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
-                counters_print.append(f"{i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-        return (f"Адрес: {counters['address']}", "Показания:") + tuple(counters_print)
+                counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+        return (f"Адрес: {counters['address']}:\n"," ") + tuple(counters_print)
 
     @api_query
     def get_verify(self, account, fio):
@@ -121,9 +123,11 @@ class WebhookDialogflow(MethodView):
         k=0
         for i in counters['counters']:
             k=k+1
-            if i.get('place') is None or i['model'] is None or i['nextVerificationRemaining'] < 0:
+            if i['counters']==' ':
+                counters_print.append(f"Счетчики отсутствуют!")
+            if  i['nextVerificationRemaining'] < 0 or i.get('place') is None:
                 counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
             else:
-                counters_print.append(f"{k}. {i['model']} комм. услуги {SHORTCODE.get(i['name'])}"
+                counters_print.append(f"{k}. {i['model']} ({SHORTCODE.get(i['name'])})"
                                       f"({i['place']}). До следующей поверки {i['nextVerificationRemaining']} дн.")
         return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
