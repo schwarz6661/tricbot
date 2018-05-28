@@ -106,6 +106,7 @@ class WebhookDialogflow(MethodView):
         counters_print = []
         k=0
         for i in counters['counters']:
+            k=k+1
             if counters['counters'] == ' ':
                 counters_print.append(f"Счетчики отсутствуют!")
             if i['place'] is None or i['model'] is None:
