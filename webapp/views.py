@@ -30,6 +30,7 @@ def api_query(fn):
         try:
             return fn(*args, **kwargs)
         except urllib.request.HTTPError as err:
+            print(err.reason)
             if err.code in (500, 503):
                 raise APIQueryError("Сервер недоступен")
             elif err.code == 404:
