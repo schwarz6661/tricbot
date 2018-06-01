@@ -127,9 +127,9 @@ class WebhookDialogflow(MethodView):
             k=k+1
             if counters['counters'] == ' ':
                 counters_print.append(f"Счетчики отсутствуют!")
-            if  i['nextVerificationRemaining'] < 0 or i.get('place') is None or i['model'] is None:
-                counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
+            if  i['nextVerificationRemaining'] < 0 or i.get('place') is None:
+                counters_print.append(f"{k}. {i['model']} {SHORTCODE.get(i['name'])}. {i['nextVerificationMessage']}!")
             else:
-                counters_print.append(f"{k}. {i['model']} ({SHORTCODE.get(i['name'])})"
+                counters_print.append(f"{k}. ({SHORTCODE.get(i['name'])})"
                                       f"({i['place']}). До следующей поверки {i['nextVerificationRemaining']} дн.")
         return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
