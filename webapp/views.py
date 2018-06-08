@@ -54,7 +54,7 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
 
-        if data.get("webhookStatus").get("code") == "13":
+        if data.get("queryResult").get("code") == "13":
             return make_response(jsonify(self.default()))
 
     def verification(self, data):
