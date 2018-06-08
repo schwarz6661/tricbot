@@ -54,7 +54,8 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
 
-        return make_response(jsonify(self.default()))
+        if data.get("webhookStatus").get("code") == "13":
+            return make_response(jsonify(self.default()))
 
     def verification(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
@@ -67,7 +68,7 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
     
     def default(self):
-        speech = "Что-то пошло не так"
+        speech = "Сервер недоступен. Повторите попозже"
         return {'fulfillmentText': speech}
 
     def check_duty(self, data):
