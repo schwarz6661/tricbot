@@ -38,7 +38,6 @@ def api_query(fn):
                 raise APIQueryError("Нет ответа от сервера")
             else:
                 raise APIQueryError("Что-то пошло не так")
-
     return query
 
 
@@ -78,8 +77,8 @@ class WebhookDialogflow(MethodView):
             speech = "\n".join(self.get_duty(account))
         except APIQueryError as e:
             speech = str(e)
-
-        return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
+        return {'fulfillmentText' : speech }
+        # return {'payload': {'telegram': {"text": speech}}, "source": "tricbot"}
 
     def check_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
