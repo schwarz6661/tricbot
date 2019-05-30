@@ -1,6 +1,7 @@
 import urllib
 from flask.views import MethodView
 from flask import render_template, request, jsonify, make_response, json
+import dumps
 
 SHORTCODE = {
     'Холодное водоснабжение': 'ХВ',
@@ -99,7 +100,7 @@ class WebhookDialogflow(MethodView):
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
         try:
-            speech = self.put_reading(account, fio)
+            speech = dumps(self.put_reading(account, fio))
         except APIQueryError as e:
             speech = str(e)
         return {'fulfillmentMessages': speech}
