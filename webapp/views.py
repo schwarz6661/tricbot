@@ -52,7 +52,7 @@ class WebhookDialogflow(MethodView):
             return make_response(jsonify(self.check_readings(data)))
 
         if data.get("queryResult").get("action") == "put.readings":
-            return make_response(jsonify(self.get_readings(data)))
+            return make_response(jsonify(self.put_readings(data)))
 
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
@@ -94,12 +94,12 @@ class WebhookDialogflow(MethodView):
             speech = str(e)
         return {'fulfillmentText': speech}
 
-    def get_readings(self, data):
+    def put_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
         try:
-            speech = "\n".join(self.put_readings(account, fio))
+            speech = "\n".join(self.put_reading(account, fio))
         except APIQueryError as e:
             speech = str(e)
         return {'fulfillmentMessages': speech}
@@ -149,7 +149,7 @@ class WebhookDialogflow(MethodView):
         return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
    
     @api_query
-    def put_readings(self, account, fio):
+    def put_reading(self, account, fio):
         with urllib.request.urlopen(
                 f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
             counters = json.loads(response.read())
@@ -159,8 +159,8 @@ class WebhookDialogflow(MethodView):
             k=k+1
             if counters['counters'] == ' ':
                 counters_print.append(f"Счетчики отсутствуют!")
-            if i['place'] is None or i['model'] is None:
+            if i['place'] is None or i['model'] is None:9
                 counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-            return (f"Адрес: {counters['address']}:"," ") + tuple(counters_print)
+            return (counters_print)
