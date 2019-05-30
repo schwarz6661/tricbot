@@ -30,7 +30,7 @@ def api_query(fn):
         try:
             return fn(*args, **kwargs)
         except urllib.request.HTTPError as err:
-            if err.code in (500, 503):
+            if err.code in (500, 503, 504):
                 raise APIQueryError("Сервер недоступен")
             elif err.code == 404:
                 raise APIQueryError("Неправильный лицевой счет")
@@ -50,6 +50,9 @@ class WebhookDialogflow(MethodView):
 
         if data.get("queryResult").get("action") == "check.readings":
             return make_response(jsonify(self.check_readings(data)))
+
+        if data.get("queryResult").get("action") == "put.readings":
+            return make_response(jsonify(self.put_readings(data)))
 
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
@@ -90,6 +93,16 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
         return {'fulfillmentText': speech}
+
+    def put_readings(self, data):
+        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
+        fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
+
+        try:
+            speech = "\n".join(self.get_readings(account, fio))
+        except APIQueryError as e:
+            speech = str(e)
+        return {'fulfillmentMessages': speech}
 
     @api_query
     def get_duty(self, account):
