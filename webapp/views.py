@@ -97,14 +97,13 @@ class WebhookDialogflow(MethodView):
     def put_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
-        text = data["queryResult"]["fulfillmentMessages"]["card"].get("text")
-        
+     
         try:
             speech = self.put_reading(account, fio)
         except APIQueryError as e:
             speech = str(e)
         print(speech)
-        return {text : speech}
+        return {'fulfillmentMessages' : speech}
         # 'fulfillmentMessages': speech}
         
 
