@@ -163,4 +163,4 @@ class WebhookDialogflow(MethodView):
                 counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-            return (counters_print)
+        return (counters_print)
