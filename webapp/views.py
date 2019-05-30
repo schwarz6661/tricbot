@@ -97,7 +97,7 @@ class WebhookDialogflow(MethodView):
     def put_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
-        button = data.get("queryResult", dict()).get("fulfillmentMessages").get("card", dict()).get("buttons").get("text")
+        button = data.get("queryResult", dict()).get("fulfillmentMessages", dict()).get("card", dict()).get("buttons", dict()).get("text")
 
         try:
             speech = self.put_reading(account, fio)
