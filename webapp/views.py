@@ -97,13 +97,12 @@ class WebhookDialogflow(MethodView):
     def put_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
-        keyboard = data.put("reply_markup", dict()).
 
         try:
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        return {'fulfillmentMessages': speech
+        return {'fulfillmentMessages': speech,
         
         "telegram": {
     "text": "Pick a color",
