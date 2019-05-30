@@ -106,7 +106,7 @@ class WebhookDialogflow(MethodView):
             # 'fulfillmentMessages': speech,
         
         "telegram": {
-    "text": "Pick a color",
+    "text": speech,
     "reply_markup": {
       "inline_keyboard": [
         [
