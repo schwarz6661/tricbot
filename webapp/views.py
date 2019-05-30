@@ -52,7 +52,7 @@ class WebhookDialogflow(MethodView):
             return make_response(jsonify(self.check_readings(data)))
 
         if data.get("queryResult").get("action") == "put.readings":
-            return make_response(jsonify(self.put_readings(data)))
+            return make_response(jsonify(self.get_readings(data)))
 
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
@@ -94,51 +94,15 @@ class WebhookDialogflow(MethodView):
             speech = str(e)
         return {'fulfillmentText': speech}
 
-    def put_readings(self, data):
+    def get_readings(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
-        request = {
-        "reply_markup": {
-            "inline_keyboard": [
-                [
-                {
-                    "text": "Red",
-                    "callback_data": "Red"
-                }
-                ],
-                [
-                {
-                    "text": "Green",
-                    "callback_data": "Green"
-                }
-                ],
-                [
-                {
-                    "text": "Yellow",
-                    "callback_data": "Yellow"
-                }
-                ],
-                [
-                {
-                    "text": "Blue",
-                    "callback_data": "Blue"
-                }
-                ],
-                [
-                {
-                    "text": "Pink",
-                    "callback_data": "Pink"
-                }
-                ]
-            ]
-    }
-}
 
         try:
-            speech = "\n".join(self.get_readings(account, fio))
+            speech = "\n".join(self.put_readings(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        return {'fulfillmentMessages': request}
+        return {'fulfillmentMessages': speech}
 
 
     @api_query
@@ -183,3 +147,20 @@ class WebhookDialogflow(MethodView):
                 counters_print.append(f"{k}. ({SHORTCODE.get(i['name'])})"
                                       f"({i['place']}). До следующей поверки {i['nextVerificationRemaining']} дн.")
         return (f"Адрес: {counters['address']}", "Счетчики:") + tuple(counters_print)
+   
+    @api_query
+    def put_readings(self, account, fio):
+        with urllib.request.urlopen(
+                f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
+            counters = json.loads(response.read())
+        counters_print = []
+        k=0
+        for i in counters['counters']:
+            k=k+1
+            if counters['counters'] == ' ':
+                counters_print.append(f"Счетчики отсутствуют!")
+            if i['place'] is None or i['model'] is None:
+                counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+            else:
+                counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+            return (f"Адрес: {counters['address']}:"," ") + tuple(counters_print)
