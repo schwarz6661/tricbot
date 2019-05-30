@@ -102,7 +102,8 @@ class WebhookDialogflow(MethodView):
             speech = "\n".join(self.get_readings(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        return {'fulfillmentMessages': speech,
+        return {
+            # 'fulfillmentMessages': speech,
         
         "telegram": {
     "text": "Pick a color",
