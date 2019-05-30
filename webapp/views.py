@@ -57,7 +57,7 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "verification":
             return make_response(jsonify(self.verification(data)))
 
-        if data.get("queryResult").get("code") == "13":
+        if data.get("queryResult").get("code") == 13:
             return make_response(jsonify(self.default()))
 
     def verification(self, data):
@@ -71,7 +71,7 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
     
     def default(self):
-        speech = "Сервер недоступен. Повторите попозже"
+        speech = "Произошла ошибка"
         return {'fulfillmentText': speech}
 
     def check_duty(self, data):
@@ -103,10 +103,8 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
         return {
-            # 'fulfillmentMessages': speech,
-        
-        "telegram": {
-    "text": speech,
+             'fulfillmentMessages': 
+             
     "reply_markup": {
       "inline_keyboard": [
         [
@@ -140,7 +138,7 @@ class WebhookDialogflow(MethodView):
           }
         ]
       ]
-    }
+    
   }
         
         }
