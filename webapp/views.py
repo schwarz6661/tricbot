@@ -95,6 +95,7 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
 
     def put_readings(self, data):
+        print(data)
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
      
@@ -102,7 +103,6 @@ class WebhookDialogflow(MethodView):
             speech = "\n".join(self.put_reading(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        print(speech)
         return {'fulfillmentText' : speech}
         # 'fulfillmentMessages': speech}
         
