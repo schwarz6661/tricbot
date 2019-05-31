@@ -107,7 +107,7 @@ class WebhookDialogflow(MethodView):
 
         counters = self.put_reading(account, fio)
         try:
-            speech = self.get_id
+            speech = self.get_id(account, fio)
         except APIQueryError as e:
             speech = str(e)
         
