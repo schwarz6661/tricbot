@@ -103,7 +103,8 @@ class WebhookDialogflow(MethodView):
             speech = "\n".join(self.put_reading(account, fio))
         except APIQueryError as e:
             speech = str(e)
-        return {'fulfillmentMessages': [{'card': {'title': 'Счетчики', 'text': 'Hren?','buttons':[{'text': 'Хрень', "postback": 'долг'}]}, 'platform': 'TELEGRAM'}]}
+
+        return {'fulfillmentText' : speech}
         # 'fulfillmentMessages': speech}
         
 
