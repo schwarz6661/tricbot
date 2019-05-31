@@ -111,13 +111,7 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
         
-        return {
-            'fulfillmentMessages': [
-                {'card': {
-                    'title': speech,
-                    'buttons':[{'text':c, 'postback': c} for c in counters]
-                    }, 
-                'platform': 'TELEGRAM'}]}
+        return {'fulfillmentMessages': [{'text': {'text': ['вЫБЕРИТЕ счетчимк']}, 'platform': 'TELEGRAM'}, {'payload': {'telegram': {'text': 'Выберите город', 'reply_markup': {'inline_keyboard': [[{'text': 'Тюмень', 'callback_data': 'tyumen'}], [{'text': 'Заводоуковск', 'callback_data': 'zavod'}], [{'text': 'Ялуторовск', 'callback_data': 'yalutor'}], [{'text': 'Тобольск', 'callback_data': 'tobol'}], [{'text': 'Ишим', 'callback_data': 'ishim'}]]}}}, 'platform': 'TELEGRAM'}]}
         # 'fulfillmentMessages': speech}
         
 
