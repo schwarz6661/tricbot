@@ -104,13 +104,20 @@ class WebhookDialogflow(MethodView):
         
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
-     
+
+        counters = self.put_reading(account, fio)
         try:
-            speech = "\n".join(self.put_reading(account, fio))
+            speech = "\n".join(counters)
         except APIQueryError as e:
             speech = str(e)
         
-        return {'fulfillmentText' : speech}
+        return {
+            'fulfillmentMessages': [
+                {'card': {
+                    'title': speech,
+                    'buttons':[{'text':c, 'postback': c} for c in counters]
+                    }, 
+                'platform': 'TELEGRAM'}]}
         # 'fulfillmentMessages': speech}
         
 
