@@ -112,7 +112,7 @@ class WebhookDialogflow(MethodView):
             speech = str(e)
         
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
-            [{'text': c, 'callback_data': s}] for c in counters for s in speech
+            [{'text': c, 'callback_data': speech}] for c in counters
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
 
     @api_query
