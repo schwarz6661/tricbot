@@ -1,4 +1,5 @@
 import urllib
+from logging import getLogger
 from flask.views import MethodView
 from flask import render_template, request, jsonify, make_response, json
 
@@ -9,6 +10,7 @@ SHORTCODE = {
     'Электроэнергия (ночь)': 'ЭЭ (ночь)'
 }
 
+logger = getLogger('webhook')
 
 class APIQueryError(Exception):
     pass
@@ -44,21 +46,23 @@ def api_query(fn):
 class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
+        logger.info(f"Request:\n{data}")
 
+        response = self.default()
         if data.get("queryResult").get("action") == "check.duty":
-            return make_response(jsonify(self.check_duty(data)))
+            response = self.check_duty(data)
 
         if data.get("queryResult").get("action") == "check.readings":
-            return make_response(jsonify(self.check_readings(data)))
+            response = self.check_readings(data)
 
         if data.get("queryResult").get("action") == "put.readings":
-            return make_response(jsonify(self.put_readings(data)))
+            response = self.put_readings(data)
 
         if data.get("queryResult").get("action") == "verification":
-            return make_response(jsonify(self.verification(data)))
+            response = self.verification(data)
 
-        if data.get("queryResult").get("code") == 13 or data.get("queryResult").get("code") == 14:
-            return make_response(jsonify(self.default()))
+        logger.info(f"Response:\n {response}")
+        return make_response(jsonify(response))
 
     def verification(self, data):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
@@ -95,7 +99,7 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
 
     def put_readings(self, data):
-        print(data)
+        
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
      
@@ -103,7 +107,7 @@ class WebhookDialogflow(MethodView):
             speech = "\n".join(self.put_reading(account, fio))
         except APIQueryError as e:
             speech = str(e)
-
+        
         return {'fulfillmentText' : speech}
         # 'fulfillmentMessages': speech}
         
