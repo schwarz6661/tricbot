@@ -1,5 +1,5 @@
 import urllib
-from logging import getLogger
+from logging import basicConfig, getLogger, INFO as level
 from flask.views import MethodView
 from flask import render_template, request, jsonify, make_response, json
 
@@ -9,6 +9,8 @@ SHORTCODE = {
     'Электроэнергия (день)': 'ЭЭ (день)',
     'Электроэнергия (ночь)': 'ЭЭ (ночь)'
 }
+
+logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=level)
 
 logger = getLogger('webhook')
 
