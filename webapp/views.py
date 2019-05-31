@@ -105,14 +105,14 @@ class WebhookDialogflow(MethodView):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
-        counters = self.put_reading(account, fio)
+        
         try:
-            speech = self.get_id(account, fio)
+            counters = self.put_reading(account, fio)
         except APIQueryError as e:
-            speech = str(e)
+            return {"fulfillmentText": str(e)}
         
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
-            [{'text': c, 'callback_data': speech}] for c in counters
+            [{'text': self.print_counter(c), 'callback_data': f'прием счетчика по лс {account} с фамилией {fio} по номеру {c["id"]}'}] for c in counters
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
 
     @api_query
@@ -163,24 +163,9 @@ class WebhookDialogflow(MethodView):
         with urllib.request.urlopen(
                 f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
             counters = json.loads(response.read())
-        counters_print = []
-        k=0
-        for i in counters['counters']:
-            k=k+1
-            if counters['counters'] == ' ':
-                counters_print.append(f"Счетчики отсутствуют!")
-            if i['place'] is None or i['model'] is None:
-                counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-            else:
-                counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
-        return (counters_print)
+        return counters['counters']
 
-    @api_query
-    def get_id(self, account, fio):
-        with urllib.request.urlopen(
-                f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
-            counters = json.loads(response.read())
-        counters_print = []
-        for i in counters['counters']:
-            counters_print.append(i['id'])
-        return (counters_print)
+    def print_counter(self, counter):
+        if counter['place'] is None or counter['model'] is None:
+                return f"{SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
+        return f"{counter['place']}: {counter['model']}. {SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
