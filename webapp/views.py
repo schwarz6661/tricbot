@@ -103,7 +103,7 @@ class WebhookDialogflow(MethodView):
         except APIQueryError as e:
             speech = str(e)
         print(speech)
-        return {'fulfillmentMessages' : speech}
+        return {'fulfillmentText' : speech}
         # 'fulfillmentMessages': speech}
         
 
