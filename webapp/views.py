@@ -113,7 +113,7 @@ class WebhookDialogflow(MethodView):
         
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': speech, 'reply_markup': {'inline_keyboard': [
             [{'text': c, 'callback_data': 'долг'}] for c in counters
-            ]}}}, 'platform': 'TELEGRAM'}], 'counters': []}
+            ]}}}, 'platform': 'TELEGRAM'}], 'counters': "[]"}
 
     @api_query
     def get_duty(self, account):
