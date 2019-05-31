@@ -107,12 +107,12 @@ class WebhookDialogflow(MethodView):
 
         counters = self.put_reading(account, fio)
         try:
-            speech = "\n".join(counters)
+            speech = self.get_id
         except APIQueryError as e:
             speech = str(e)
         
-        return {'fulfillmentMessages': [{'payload': {'telegram': {'text': speech, 'reply_markup': {'inline_keyboard': [
-            [{'text': c, 'callback_data': 'долг'}] for c in counters
+        return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
+            [{'text': c, 'callback_data': s}] for c in counters for s in speech
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
 
     @api_query
@@ -170,7 +170,17 @@ class WebhookDialogflow(MethodView):
             if counters['counters'] == ' ':
                 counters_print.append(f"Счетчики отсутствуют!")
             if i['place'] is None or i['model'] is None:
-                counters_print.append(f"{k}. Место не указано: {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+                counters_print.append(f"{k}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
             else:
                 counters_print.append(f"{k}. {i['place']}: {i['model']}. {SHORTCODE.get(i['name'])}. {i['currReadings']}")
+        return (counters_print)
+
+    @api_query
+    def get_id(self, account, fio):
+        with urllib.request.urlopen(
+                f'https://api.itpc.ru/v1/accounts/{account}/counters?lastname={urllib.parse.quote(fio)}') as response:
+            counters = json.loads(response.read())
+        counters_print = []
+        for i in counters['counters']:
+            counters_print.append(i['id'])
         return (counters_print)
