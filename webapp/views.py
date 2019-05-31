@@ -10,7 +10,7 @@ SHORTCODE = {
     'Электроэнергия (ночь)': 'ЭЭ (ночь)'
 }
 
-logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=level)
+basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=level)
 
 logger = getLogger('webhook')
 
