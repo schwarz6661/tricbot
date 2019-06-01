@@ -105,14 +105,14 @@ class WebhookDialogflow(MethodView):
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
-        
         try:
             counters = self.put_reading(account, fio)
         except APIQueryError as e:
             return {"fulfillmentText": str(e)}
         
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
-            [{'text': self.print_counter(c), 'callback_data': f'прием счетчика по лс {account} с фамилией {fio} по номеру {c["id"]}'}] for c in counters
+            [{'text': self.print_counter(c), 'callback_data': f'{c["id"]}'}] for c in counters
+            # прием счетчика по лс {account} с фамилией {fio} по номеру 
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
 
     @api_query
