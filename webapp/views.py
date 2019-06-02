@@ -111,7 +111,8 @@ class WebhookDialogflow(MethodView):
             return {"fulfillmentText": str(e)}
         
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
-            [{'text': self.print_counter(c), 'callback_data': f'прием счетчика по лс {account} с фамилией {fio} по номеру {c["id"]}'}] for c in counters
+            [{'text': self.print_counter(c), 'callback_data': f'счетчик по номеру {c["id"]}'}] for c in counters
+#               по лс {account} с фамилией {fio} 
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
 
     @api_query
