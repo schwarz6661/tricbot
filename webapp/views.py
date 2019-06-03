@@ -54,14 +54,17 @@ class WebhookDialogflow(MethodView):
         if data.get("queryResult").get("action") == "check.duty":
             response = self.check_duty(data)
 
-        if data.get("queryResult").get("action") == "check.readings":
+        elif data.get("queryResult").get("action") == "check.readings":
             response = self.check_readings(data)
 
-        if data.get("queryResult").get("action") == "put.readings":
+        elif data.get("queryResult").get("action") == "put.readings":
             response = self.put_readings(data)
 
-        if data.get("queryResult").get("action") == "verification":
+        elif data.get("queryResult").get("action") == "verification":
             response = self.verification(data)
+
+        elif data.get("queryResult").get("action") == "put.counter_reading":
+            response = self.put_counter_reading(data)
 
         logger.info(f"Response:\n {response}")
         return make_response(jsonify(response))
@@ -101,7 +104,6 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
 
     def put_readings(self, data):
-        
         account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
@@ -109,11 +111,22 @@ class WebhookDialogflow(MethodView):
             counters = self.put_reading(account, fio)
         except APIQueryError as e:
             return {"fulfillmentText": str(e)}
-        
         return {'fulfillmentMessages': [{'payload': {'telegram': {'text': 'Нажми на счетчик и введи показание по нему', 'reply_markup': {'inline_keyboard': [
             [{'text': self.print_counter(c), 'callback_data': f'счетчик по номеру {c["id"]}'}] for c in counters
 #               по лс {account} с фамилией {fio} 
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
+    
+    def put_counter_reading(self, data):
+        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
+        fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
+        # counter_id = int(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
+        # value = int(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
+
+        try:
+            counters = self.put_reading(account, fio)
+        except APIQueryError as e:
+            return {"fulfillmentText": str(e)}
+        return {'fulfillmentText': self.put_counter_readings(c) for c in counters}
 
     @api_query
     def get_duty(self, account):
@@ -167,5 +180,8 @@ class WebhookDialogflow(MethodView):
 
     def print_counter(self, counter):
         if counter['place'] is None or counter['model'] is None:
-                return f"{SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
+            return f"{SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
         return f"{counter['place']}: {counter['model']}. {SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
+
+    def put_counter_readings(self, counter):
+        return f"предыдущее показание {counter['previous']}, текущее показание {counter['current']}"
