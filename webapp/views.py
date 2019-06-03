@@ -120,8 +120,6 @@ class WebhookDialogflow(MethodView):
     def put_counter_reading(self, data):
         counter_id = dict(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
         value = dict(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
-        # counter_id = int(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
-        # value = int(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
 
         try:
             counters = self.put_counter_readings(counter_id, value)
@@ -131,8 +129,8 @@ class WebhookDialogflow(MethodView):
 
     @api_query
     def get_duty(self, account):
-        with urllib.request.urlopen(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=10) as response:
-            debt = json.loads(response.read())
+        r = requests.get(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=10)
+        debt = r.json()
         return (f"По вашему лицевому счету: {account}",
                 f"Адрес: {debt['address']}",
                 f"Ваша задолженность: {debt['amount']}")
