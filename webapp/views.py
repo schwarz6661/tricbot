@@ -1,8 +1,9 @@
+import requests
 import urllib
 from logging import basicConfig, getLogger, INFO as level
 from flask.views import MethodView
 from flask import render_template, request, jsonify, make_response, json
-import requests
+
 
 SHORTCODE = {
     'Холодное водоснабжение': 'ХВ',
