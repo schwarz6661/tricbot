@@ -134,7 +134,7 @@ class WebhookDialogflow(MethodView):
         debt = r.json()
         return (f"По вашему лицевому счету: {account}",
                 f"Адрес: {debt['address']}",
-                f"Ваша задолженность: {debt['amount']}")
+                f"Ваша задолженность: {debt['amount']}") 
 
     @api_query
     def get_readings(self, account, fio):
