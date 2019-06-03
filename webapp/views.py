@@ -1,4 +1,3 @@
-import requests
 import urllib
 from logging import basicConfig, getLogger, INFO as level
 from flask.views import MethodView
@@ -130,8 +129,9 @@ class WebhookDialogflow(MethodView):
 
     @api_query
     def get_duty(self, account):
-        r = requests.get(f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=10)
-        debt = r.json()
+        with urllib.request.urlopen(
+                f'https://api.itpc.ru/v1/accounts/{account}/debt', timeout=10) as response:
+            debt = json.loads(response.read())
         return (f"По вашему лицевому счету: {account}",
                 f"Адрес: {debt['address']}",
                 f"Ваша задолженность: {debt['amount']}") 
