@@ -40,8 +40,8 @@ def api_query(fn):
                 raise APIQueryError("Неправильный лицевой счет")
             elif err.code == 408:
                 raise APIQueryError("Нет ответа от сервера")
-            else:
-                raise APIQueryError("Что-то пошло не так")
+#             else:
+#                 raise APIQueryError("Что-то пошло не так")
     return query
 
 
