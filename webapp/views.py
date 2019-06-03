@@ -2,6 +2,7 @@ import urllib
 from logging import basicConfig, getLogger, INFO as level
 from flask.views import MethodView
 from flask import render_template, request, jsonify, make_response, json
+import requests
 
 SHORTCODE = {
     'Холодное водоснабжение': 'ХВ',
@@ -117,16 +118,16 @@ class WebhookDialogflow(MethodView):
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
     
     def put_counter_reading(self, data):
-        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
-        fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
+        counter_id = dict(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
+        value = dict(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
         # counter_id = int(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
         # value = int(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
 
         try:
-            counters = self.put_reading(account, fio)
+            counters = self.put_counter_readings(counter_id, value)
         except APIQueryError as e:
             return {"fulfillmentText": str(e)}
-        return {'fulfillmentText': self.put_counter_readings(c) for c in counters}
+        return {'fulfillmentText': counters}
 
     @api_query
     def get_duty(self, account):
@@ -183,5 +184,5 @@ class WebhookDialogflow(MethodView):
             return f"{SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
         return f"{counter['place']}: {counter['model']}. {SHORTCODE.get(counter['name'])}. {counter['currReadings']}"
 
-    def put_counter_readings(self, counter):
-        return f"предыдущее показание {counter['previous']}, текущее показание {counter['current']}"
+    def put_counter_readings(self, counter_id, value):
+        return f"{counter_id}, {value}"
