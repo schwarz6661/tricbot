@@ -1,6 +1,7 @@
 import urllib
 from logging import basicConfig, getLogger, INFO as level
 from flask.views import MethodView
+from pprint import pformat
 from flask import render_template, request, jsonify, make_response, json
 
 
@@ -49,7 +50,7 @@ def api_query(fn):
 class WebhookDialogflow(MethodView):
     def post(self):
         data = request.get_json(silent=True, force=True)
-        logger.info(f"Request:\n{data}")
+        logger.info(f"Request:\n{pformat(data)}")
 
         response = self.default()
         if data.get("queryResult").get("action") == "check.duty":
@@ -67,7 +68,7 @@ class WebhookDialogflow(MethodView):
         elif data.get("queryResult").get("action") == "put.counter_reading":
             response = self.put_counter_reading(data)
 
-        logger.info(f"Response:\n {response}")
+        logger.info(f"Response:\n {pformat(response)}")
         return make_response(jsonify(response))
 
     def verification(self, data):
