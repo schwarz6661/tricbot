@@ -105,7 +105,7 @@ class WebhookDialogflow(MethodView):
         return {'fulfillmentText': speech}
 
     def put_readings(self, data):
-        account = int(data.get("queryResult", dict()).get("parameters", dict()).get("account"))
+        account = data.get("queryResult", dict()).get("parameters", dict()).get("account")
         fio = data.get("queryResult", dict()).get("parameters", dict()).get("fio")
 
         try:
@@ -118,8 +118,8 @@ class WebhookDialogflow(MethodView):
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
     
     def put_counter_reading(self, data):
-        counter_id = dict(data.get("queryResult", dict()).get("parameters", dict()).get("counter"))
-        value = dict(data.get("queryResult", dict()).get("parameters", dict()).get("value"))
+        counter_id = data.get("queryResult", dict()).get("parameters", dict()).get("counter_id")
+        value = data.get("queryResult", dict()).get("parameters", dict()).get("value")
 
         try:
             counters = self.put_counter_readings(counter_id, value)
