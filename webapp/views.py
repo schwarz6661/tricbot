@@ -123,7 +123,7 @@ class WebhookDialogflow(MethodView):
         value = data.get("queryResult", dict()).get("parameters", dict()).get("value")
 
         if not value:
-            return { "outputContexts": data.get("outputContexts", list()),
+            return { "outputContexts": data['queryResult'].get("outputContexts", list()),
                      "fulfillmentText": "Введи показание счетчика"}
         try:
             counters = self.put_counter_readings(counter_id, value)
