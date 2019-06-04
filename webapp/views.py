@@ -119,28 +119,28 @@ class WebhookDialogflow(MethodView):
             ]}}}, 'platform': 'TELEGRAM'}], 'parameters': {'counters': "123"}}
     
     def put_counter_reading(self, data):
-        counter_id = data.get("queryResult", dict()).get("parameters", dict()).get("counter_id")
-        value = data.get("queryResult", dict()).get("parameters", dict()).get("value")
-
-        if not value:
-            return { "outputContexts": [
-                        {
-                            "name": "projects/trictest-2ec21/agent/sessions/d8f6c654-69d7-4708-a3c5-6e2760cc5b21/contexts/counter",
-                            "lifespanCount": 5,
-                            "parameters": {
-                                'counter_id': 1134679.0,
-                                'counter_id.original': '1134679',
-                                'counter_name': 'счетчик по номеру',
-                                'counter_name.original': 'счетчик по номеру'
-                            }
-                        }
-                    ],
-                     "fulfillmentText": "Введи показание счетчика"}
-        try:
-            counters = self.put_counter_readings(counter_id, value)
-        except APIQueryError as e:
-            return {"fulfillmentText": str(e)}
-        return {'fulfillmentText': counters}
+        counter = data.get("queryResult", dict()).get("parameters", dict()).get("counter")
+        
+    
+        # if not value:
+        #     return { "outputContexts": [
+        #                 {
+        #                     "name": "projects/trictest-2ec21/agent/sessions/d8f6c654-69d7-4708-a3c5-6e2760cc5b21/contexts/counter",
+        #                     "lifespanCount": 5,
+        #                     "parameters": {
+        #                         'counter_id': 1134679.0,
+        #                         'counter_id.original': '1134679',
+        #                         'counter_name': 'счетчик по номеру',
+        #                         'counter_name.original': 'счетчик по номеру'
+        #                     }
+        #                 }
+        #             ],
+        #              "fulfillmentText": "Введи показание счетчика"}
+        # try:
+        #     counters = self.put_counter_readings(counter_id, value)
+        # except APIQueryError as e:
+        #     return {"fulfillmentText": str(e)}
+        # return {'fulfillmentText': counters}
 
     @api_query
     def get_duty(self, account):
