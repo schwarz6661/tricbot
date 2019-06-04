@@ -121,6 +121,10 @@ class WebhookDialogflow(MethodView):
         counter_id = data.get("queryResult", dict()).get("parameters", dict()).get("counter_id")
         value = data.get("queryResult", dict()).get("parameters", dict()).get("value")
 
+        if not value:
+            return { "action": "put.counter_reading",  
+                     "parameters": {"counter_id": [1134682]},
+                     "fulfillmentText": "Введи показание счетчика"}
         try:
             counters = self.put_counter_readings(counter_id, value)
         except APIQueryError as e:
